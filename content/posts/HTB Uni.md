@@ -66,7 +66,7 @@ dp = 0x59a2219560ee56e7c35f310a4d101061aa61e0ae4eae7605eb63784209ad488b4ed161e78
 dq = 0x39719131fbfd8afbc972ca005a430d080775bf1a5b3e8b789aba5c5110a31bd155ff13fba1019bb6cb7db887685e34ca7966a891bfad029b55b92c11201559e5
 
 ```
-In this challenge, we are given 512 MSB of $d_p = d \mod p-1$ and $d_q = d \mod q-1$. This kind of challenge is similar to [a challenge that i solved](/pTtY4gtrQYuiex-cov2hJg) in BauhiniaCTF 2023 (this writeup is written in Vietnamese). I followed this and solved this challenge, and I will explain what i did.
+In this challenge, we are given 512 MSB of $d_p = d \mod p-1$ and $d_q = d \mod q-1$. This kind of challenge is similar to [a challenge that i solved](https://giapppp.github.io/posts/bauhinia-ctf-2023/) in BauhiniaCTF 2023 (this writeup is written in Vietnamese). I followed this and solved this challenge, and I will explain what i did.
 
 ### Finding k, l
 
@@ -74,17 +74,17 @@ In this challenge, we are given 512 MSB of $d_p = d \mod p-1$ and $d_q = d \mod 
 
 Let rewrite $d_p$ and $d_q$:
 
-$$\begin{aligned}d_p &= d_p^{(M)} * 2^{512} + d_p^{(L)} \\ d_q &= d_q^{(M)} * 2^{512} + d_q^{(L)}\end{aligned}$$
+$$\begin{aligned}d_p &= d_p^{(M)} * 2^{512} + d_p^{(L)} \newline d_q &= d_q^{(M)} * 2^{512} + d_q^{(L)}\end{aligned}$$
 
 Where $d_p^{(M)}, d_q^{(M)}$ is MSBs and $d_p^{(L)}, d_q^{(L)}$ is LSBs. We already have $d_p^{(M)}, d_q^{(M)}$, so our problem is finding LSBs
 
 With $d_p$ and $d_q$, we have:
 
-$$\begin{aligned}ed_p &= k(p-1) + 1 \\ ed_q &= l(p-1) + 1\end{aligned}$$
+$$\begin{aligned}ed_p &= k(p-1) + 1 \newline ed_q &= l(p-1) + 1\end{aligned}$$
 
 Rewrite it:
 
-$$\begin{aligned}kp = k - 1 + ed_p \\ lq = l - 1 + ed_q\end{aligned}$$
+$$\begin{aligned}kp = k - 1 + ed_p \newline lq = l - 1 + ed_q\end{aligned}$$
 
 Multiply $kp$ with $lq$ and we will have:
 
@@ -256,9 +256,9 @@ mix = [3200976701593042098723095494719309934171433880776124794975204623426639349
 
 A challenge with weird encryption and signing method! In this challenge, the source code is mentioned to [Kerckhoff's principle](https://en.wikipedia.org/wiki/Kerckhoffs%27s_principle), and we have everything except `private_key`. We are also given `mix`, which is the list contain encrypted `sig[0] + sig[1]` and `sig[0] - sig[1]`, where `sig[0], sig[1]` is the result of signing `flag`
 
-### From an equation to an elliptic curve :astonished: 
+### From an equation to an elliptic curve :astonished:  
 
-In this challenge, the $public\_key = (a_1, b_1, c_1)$ and $private\_key = (a_2, b_2, c_2)$ have a relationship
+In this challenge, the $public\\_key = (a_1, b_1, c_1)$ and $private\\_key = (a_2, b_2, c_2)$ have a relationship
 
 $$f = magic(a_1, b_1, c_1) = magic(a_2, b_2, c_2) = {fn \over fd}$$
 
@@ -267,9 +267,9 @@ With a strange equation, I try to google to have some ways to deal with it, afte
 
 It looks like a magic !
 
-We will using the $public\_key$ and the result in the site. Let:
+We will using the $public\\_key$ and the result in the site. Let:
 
-$$\begin{aligned}u &= 3*{f^2z - 12x \over z} \\ v &= 108*{2xy-fxz+z^2 \over z^2}\end{aligned}$$
+$$\begin{aligned}u &= 3*{f^2z - 12x \over z} \newline v &= 108*{2xy-fxz+z^2 \over z^2}\end{aligned}$$
 
 Then $(u, v)$ is a rational point on the elliptic curve $(E_f): v^2 = u^3 + Au + B$ with $A = 27f(24 - f^3)$ and $B = 54(216 - 36f^3 + f^6)$
 
@@ -277,9 +277,9 @@ With this way, we can generate many tuples $(a_i, b_i, c_i)$ that satisfy $magic
 
 ### Finding private key
 
-With the relationship we have found, we will treat $private\_key$ as a point $G_{priv}$ in $(E_f)$. Because this challenge has a hidden function `derive_public_key()`, so I guess $G_{priv}$ generates the $public\_key$ as a point $G_{pub}$ by some method
+With the relationship we have found, we will treat $privatekey$ as a point $G_{priv}$ in $(E_f)$. Because this challenge has a hidden function `derive_public_key()`, so I guess $G_{priv}$ generates the $public\\_key$ as a point $G\_{pub}$ by some method
 
-If we read the code carefully, we will see that $0 < a_2, b_2, c_2 < 2^{1024}$, when $a_1, b_1, c_1 \approx 2^{8192}$, so we need to find a way to decrease the point $G_{pub}$. And surprisingly, SageMath has a magical method $.division_point()$. When we calculate $G_{pub}.division\_point(2)$, we will have the point $G_{priv}!$
+If we read the code carefully, we will see that $0 < a_2, b_2, c_2 < 2^{1024}$, when $a_1, b_1, c_1 \approx 2^{8192}$, so we need to find a way to decrease the point $G_{pub}$. And surprisingly, SageMath has a magical method `.division_point()`. When we use that method to calculate $\frac{1}{2}G_{pub}$, we will have the point $G_{priv}!$
 
 > This part is a little bit confused, maybe because I solved this part with a guessy way. 
 
@@ -289,9 +289,9 @@ When we have $private\_key$, we can find the signature
 
 Reading the source code, we have
 
-$$\begin{aligned}mix_0 &= key.encrypt(sig_0 + sig_1) \\ mix_1 &= key.encrypt(sig_0 - sig_1)\end{aligned}$$
+$$\begin{aligned}mix_0 &= key.encrypt(sig_0 + sig_1) \newline mix_1 &= key.encrypt(sig_0 - sig_1)\end{aligned}$$
 
-where $$\begin{aligned}sig_0 &= \Big({flag \over sha256(flag)} + {sha256(flag) \over c} + {c \over flag}\Big)^d \\ sig_1 &= c^d\end{aligned}$$
+where $$\begin{aligned}sig_0 &= \Big({flag \over sha256(flag)} + {sha256(flag) \over c} + {c \over flag}\Big)^d \newline sig_1 &= c^d\end{aligned}$$
 
 and $d$ can calculate from $private\_key$
 
