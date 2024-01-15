@@ -72,14 +72,19 @@ ct = 228531092425837729335432380722635953108902308583870077848108426673313950149
 
 Bằng một chút osint, mình đã tìm ra một paper liên quan đến bài này: [Factoring with Only a Third of the Secret CRT-Exponents](https://eprint.iacr.org/2022/271.pdf). Mình sẽ giải thích chi tiết hơn về paper này
 
-Ta có các equation sau: $$\begin{align} dp &= h_{dp} * 2^{given} + l_{dp} \\ dq &= h_{dq} * 2^{given} + l_{dp} \end{align} \\ e * dp = k * (p - 1) + 1 \\ e * dq = l * (q - 1) + 1$$
+Ta có các equation sau: $$\begin{align} dp &= h_{dp} * 2^{given} + l_{dp} \newline dq &= h_{dq} * 2^{given} + l_{dp} \end{align} \newline e * dp = k * (p - 1) + 1 \newline e * dq = l * (q - 1) + 1$$
 
 Với $k, l, h_{dp}, h_{dq}$ là các ẩn mà ta chưa biết
 
-Đọc phần 3.2, ta có thể xây dựng được một đa thức 2 biến có nghiệm là $(k, l)$
+Đọc phần 3.2, ta có thể xây dựng được một đa thức 2 biến có nghiệm $(k, l)$ là:
 
-$$\begin{align} A &= e * (l_{dp} + l_{dq}) - e^2 * l_{dp} * l_{dq} - 1 \\ f(x, y) &= (N-1)*x*y - (e*l_{dq}-1)*x - (e*l_{dp}-1)*y + A \ (\ mod \ e * 2^i) \end{align}$$
+$$\begin{aligned} 
+A &= e * (l_{dp} + l_{dq}) - e^2 * l_{dp} * l_{dq} - 1
+\end{aligned}$$
 
+và
+
+$$f(x, y) = (N-1)xy - (el_{dq}-1)x - (el_{dp}-1)y + A$$
 
 Với chú ý rằng 2 giá trị $k, l < e$, ta sẽ tìm nghiệm của đa thức này bằng Coppersmith. Các bạn có thể kiếm python script của Coppersmith ở trên mạng khá nhiều. Ở đây, mình sử dụng code của [Defund](https://github.com/defund/coppersmith/blob/master/coppersmith.sage)
 
@@ -157,7 +162,7 @@ print(k, l)
 Ta sẽ tìm được $(k, l) = (12177905682444242771542873, 4277124735150641724212759)$
 
 Theo phần 3.3 của paper, sau khi đã có $k, l$, ta có thể xây dựng một đa thức $g$ trên $Z_N$ có nghiệm là $h_{dp}$:
-$$\begin{align} a &= (e*l_{dp} + k - 1) * (e*2^{-i} \mod k*N) \\ g(x) &= x + a \end{align}$$
+$$\begin{align} a &= (el_{dp} + k - 1) * (2^{-i}e \mod k*N) \newline g(x) &= x + a \end{align}$$
 
 Ta tiếp tục dùng Coppersmith để tìm nghiệm của $g$, tuy nhiên, không hiểu sao script ở trên không tìm được nghiệm của $g$
 
@@ -246,7 +251,13 @@ for f in A:
 
 Ở đây, mình sẽ kiểm tra xem nghiệm $c$ của đa thức nào trong $A$ là $h_{dp}$ bằng cách tính $gcd(g(c), N) = d$. Nếu $d > 1$ thì đó chính là $p$ mà ta cần tìm
 
-Ta tìm được $h_{dp} = 180951980763775058492815911873237082514145707000972099423553967985124001563643605807070492022$ qua đó tìm được $p = 8351309129105229708154695602362829027250608775685390771007529034429910339403472223935574054850623494610995086524639065024717100915125468017775773884252621$
+Ta tìm được 
+
+$h_{dp} = 180951980763775058492815911873237082514145707000972099423553967985124001563643605807070492022$ 
+
+Từ đó tìm được 
+
+$p = 8351309129105229708154695602362829027250608775685390771007529034429910339403472223935574054850623494610995086524639065024717100915125468017775773884252621$
 
 Khi đã có $p$, mọi chuyện là đơn giản:
 

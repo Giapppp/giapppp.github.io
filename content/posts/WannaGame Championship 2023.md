@@ -12,15 +12,17 @@ I played __WannaGame Championship 2023__ with my team @1337%_Yogurt and ended up
 
 ## Cossin 
 
-In this challenge, we have `ans = sin(flag)*cos(flag)` and `ans` has `1337` bits after decimal point. With a little trigonometry, we will have: $$2*flag + small\_number = arcsin(2*ans) + k2\pi$$
+In this challenge, we have `ans = sin(flag)*cos(flag)` and `ans` has `1337` bits after decimal point. With a little trigonometry, we will have: 
 
-(We have $small\_number$ due to floating-point)
+$$2 * flag + small = arcsin(2*ans) + k * 2\pi$$
 
-Now, we can use LLL to find flag with this basis: $$\begin{bmatrix} \arcsin(2*ans) & 0 & 1 \\ -1 & 1 & 0 \\ \pi & 0 & 0\end{bmatrix}$$
+(We have $small$ due to floating-point)
 
-and we should have a vector $v = (small\_number, 2 * flag, 1)$
+Now, we can use LLL to find flag with this basis: $$\begin{bmatrix} \arcsin(2*ans) & 0 & 1 \newline -1 & 1 & 0 \newline \pi & 0 & 0\end{bmatrix}$$
 
-We also need to make the number bigger to make lattice reduction can produce the vector we want. The matrix i use in this challenge is: $$\begin{bmatrix} [(\arcsin(2*ans))*2^{1200}] & 0 & 2^{480} \\ -2^{1200} & 1 & 0 \\ \pi * 2^{1200}& 0 & 0\end{bmatrix}$$
+and we should have a vector $v = (small, 2 * flag, 1)$
+
+We also need to make the number bigger to make lattice reduction can produce the vector we want. The matrix i use in this challenge is: $$\begin{bmatrix} [(\arcsin(2*ans))*2^{1200}] & 0 & 2^{480} \newline -2^{1200} & 1 & 0 \newline \pi * 2^{1200}& 0 & 0\end{bmatrix}$$
 
 So we will have a small vector $v = (a, 2 * flag * {a \over b}, b )$ due to scale matrix and we will have flag
 
@@ -115,7 +117,9 @@ We'll see that the group we are dealing with in the challenge is the set of poin
  
 ### Finding the hyperbola
 
-Now we should look to `generate_parameters` and see how the point $G(x,y)$ is generated. Look at the equation of $y$ and notice that we are working in $\mathbb{F}_p$: $$\begin{aligned} D &= k + (1 - k)x^2 \\ y &= {1 + \sqrt{k + (1 - k)x^2} \over x*(k-1)}\end{aligned}$$
+Now we should look to `generate_parameters` and see how the point $G(x,y)$ is generated. Look at the equation of $y$ and notice that we are working in $\mathbb{F}_p$: 
+
+$$\begin{aligned} D &= k + (1 - k)x^2 \newline y &= {1 + \sqrt{k + (1 - k)x^2} \over x*(k-1)}\end{aligned}$$
 
 ($y$ also can be equal to $1 - \sqrt{k + (1 - k)x^2} \over x*(k-1)$, but it doesn't affect too much)
 
@@ -125,15 +129,31 @@ And this one look like Pell's equation!
 
 ### Finding the group order
 
-Working with Pell's equation is a good choice to find the group order. We will call set of all points $G$ that satisfy $(1)$ is $\mathcal{H} \subset \mathbb{F}_p \times \mathbb{F}_p$. In this challenge, ${k \choose p} = -1$, so $\mathcal{H} \cong \mathcal{S}$ where $\mathcal{S} \le \mathbb{F}_{p^2}$ is the cyclic subgroup of $\mathbb{F}_{p^2}$ of order $p+1$
+Working with Pell's equation is a good choice to find the group order. We will call set of all points $G$ that satisfy $(1)$ is $\mathcal{H} \subset \mathbb{F}_p \times \mathbb{F}_p$.
 
-Let $f(W) = W^2 - k$, note that ${k \choose p} = -1$ so $f(W)$ is irreducible over $\mathbb{F}_p$. Therefore, $\mathbb{F}_{p^2} \cong \mathbb{F}_p[W]/f(W)$. Let $\alpha \in \mathcal{S}$, we will have $\alpha^{p+1} = 1$ (since $\mathcal{S}$ has order $p + 1$). But we can write $\alpha = r + sW$ for $r, s \in \mathbb{F}_p$. So: $$\begin{aligned} \alpha^{p+1} &= (r + sW)^{p}(r + sW) \\ &= (r^p + s^pW^p)(r + sW) \ \text{(Freshman's Dream)} \\ &= (r - sW)(r+sW) \ \text{(Fermat's little theorem)} \\ &= r^2 - ks^2 \ (W^2 = k)\end{aligned}$$
+In this challenge, ${k \choose p} = -1$, 
+so $\mathcal{H} \cong \mathcal{S}$ where 
+$\mathcal{S} \le \mathbb{F}_{p^2}$ 
 
-$(W^p = W*W^{p-1} = W*(W^2)^{p - 1 \over 2} = W * (-k)^{p - 1 \over 2} = -W)$
+is the cyclic subgroup of $\mathbb{F}_{p^2}$ of order $p+1$
+
+Let $f(W) = W^2 - k$,     note that ${k \choose p} = -1$ so $f(W)$ is irreducible over $\mathbb{F}_p$. 
+
+Therefore, $\mathbb{F}_{p^2} \cong \mathbb{F}_p[W]/f(W)$. Let $\alpha \in \mathcal{S}$, we will have            $\alpha^{p+1} = 1$ (since $\mathcal{S}$ has order $p + 1$). But we can write $\alpha = r + sW$ for $r, s \in \mathbb{F}_p$. So: $$\begin{aligned} \alpha^{p+1} &= (r + sW)^{p}(r + sW) \newline &= (r^p + s^pW^p)(r + sW) \ \text{(Freshman's Dream)} \newline &= (r - sW)(r+sW) \ \text{(Fermat's little theorem)} \newline &= r^2 - ks^2 \ (W^2 = k)\end{aligned}$$
+
+$(W^p = W * W^{p-1} = W * W^{2 * \frac{p-1}{2}}=W*(-k)^{\frac{p-1}{2}}=-W)$
+
 
 So, if we take $r = {1 \over x} + y$, $s = y$, we will have $\alpha^{p + 1} = 1 = (y + {1 \over x})^2 - k*y^2$. Therefore, we have the bijection $\varphi:\mathcal{H} \to \mathcal{S}, (x, y) \mapsto (y + {1 \over x}) + yW$. To see that this is an isomorphism, let $(x_1, y_1), (x_2, y_2) \in \mathcal{H}$, then: 
 
-$$\begin{aligned} \varphi((x_1, y_1)) * \varphi((x_2, y_2)) &= (y_1 + {1 \over x_1} + y_1W)(y_2 + {1 \over x_2} + y_2W) \\ &= ((y_1 + {1 \over x_1})(y_2 + {1 \over x_2}) + ky_1y_2) + (({1 \over x_1}+y_1)*y_2 + ({1 \over x_2}+y_2)*y_1)W \\ \varphi((x_1, y_1)*(x_2, y_2)) &= \varphi(({1 \over X-Y}, Y)) \\ &= X + YW  \\ &= ((y_1 + {1 \over x_1})(y_2 + {1 \over x_2}) + ky_1y_2) + (({1 \over x_1}+y_1)*y_2 + ({1 \over x_2}+y_2)*y_1)W\end{aligned}$$
+$$\begin{aligned} 
+\varphi((x_1, y_1)) * \varphi((x_2, y_2)) &= (y_1 + {1 \over x_1} + y_1W)(y_2 + {1 \over x_2} + y_2W) \newline &= ((y_1 + {1 \over x_1})(y_2 + {1 \over x_2}) + ky_1y_2) + (({1 \over x_1}+y_1)*y_2 + ({1 \over x_2}+y_2)*y_1)W 
+\end{aligned}$$
+
+$$\begin{aligned} 
+\varphi((x_1, y_1)*(x_2, y_2)) &= \varphi(({1 \over X-Y}, Y)) \newline &= X + YW  \newline &= ((y_1 + {1 \over x_1})(y_2 + {1 \over x_2}) + ky_1y_2) + (({1 \over x_1}+y_1)*y_2 + ({1 \over x_2}+y_2)*y_1)W
+\end{aligned}$$
+
 
 With $X, Y$ are using in `add` function.
 

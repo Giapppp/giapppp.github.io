@@ -55,14 +55,16 @@ Ta tìm được $d = 73, e = 3$. Tiếp theo, ta sẽ tìm các số p, q, r
 Ta chú ý đến điều kiện thứ 5:
 $$(C[0] * p - C[1] * q)^e + (C[2] * q - C[3] * r)^e + (C[4] * r - C[5] * p)^e = d * (C[0] * p - C[1] * q) * (C[2] * q - C[3] * r) * (C[4] * r - C[5] * p)$$
 Đặt 
-$$\begin{align}C[0] * p - C[1] * q &= a \\ C[2] * q - C[3] * r &= b \\ C[4] * r - C[5] * p &= c \end{align}$$
+$$\begin{align}C[0] * p - C[1] * q &= a  \newline C[2] * q - C[3] * r &= b  \newline C[4] * r - C[5] * p &= c \end{align}$$
 
 Điều kiện thứ 5 trở thành:
 $$a^3 + b^3 + c^3 = 73abc$$
 
 Sau một hồi osint, mình tìm được một cái pdf nói về dạng $a^3 + b^3 + c^3 = kabc$: http://matwbn.icm.edu.pl/ksiazki/aa/aa73/aa7331.pdf
 
-Với $k = 71$, ta tìm được $a = 1391526622949983, b = 2848691279889518, c = 89200900157319$
+Với $k = 71$, ta tìm được 
+
+$a = 1391526622949983, b = 2848691279889518, c = 89200900157319$
 
 Sau khi có $a, b, c$, ta chỉ cần giải hệ phương trình để tìm ra các số p, q, r. Ở đây, mình tiếp tục sử dụng z3 để giải hệ:
 
@@ -88,7 +90,7 @@ print(s.check())
 print(s.model())
 ```
 
-Với z3, ta tìm được $$\begin{align} p &= 9758621034843917661145412977193922808892309951663464821517963113005483457886774294910761723767526582514514505278091600074371768233672585649562672245905811\\ q &= 8919642442779618620315315582249815126044061421894622037450496385178083791083142991676417756698881509754110765444929271564991855378540939292428839562446571\\ r &= 6736304432663651651650099104581016800112378771266600017972326085742513966258250417227421932482058281545032658577816441378170466639375931780967727070265551\end{align}$$
+Với z3, ta tìm được $$\begin{align} p &= 9758621034843917661145412977193922808892309951663464821517963113005483457886774294910761723767526582514514505278091600074371768233672585649562672245905811 \newline q &= 8919642442779618620315315582249815126044061421894622037450496385178083791083142991676417756698881509754110765444929271564991855378540939292428839562446571 \newline r &= 6736304432663651651650099104581016800112378771266600017972326085742513966258250417227421932482058281545032658577816441378170466639375931780967727070265551\end{align}$$
 
 Khi đã có đủ $d, e, p, q, r$, việc còn lại là đơn giản:
 ```python=
@@ -183,9 +185,10 @@ Một bài ECC với cái curve khá là lạ. Sau một hồi osint thì mình 
 
 $$x^3+y^3+1=3dxy\ (mod p)$$
 Từ đó, ta sẽ có Weierstrass curve của curve này sẽ là:
-$$y^2 = x^3 - 27d*(d^3 + 8)*x + 54*(d^6 - 20d^3 - 8) \ (1)$$
+$$y^2 = x^3 - 27d(d^3 + 8)*x + 54(d^6 - 20d^3 - 8) \ (1)$$
+
 Công thức để chuyển điểm $P(u, v)$ trên Hessian Curve về điểm $Q(x, y)$ trên Weierstrass curve:
-$$\begin{align} (x, y) &= (-9d^2 + \varepsilon u, 3\varepsilon (v - 1))\\ \varepsilon &= \frac{12(d^3 - 1)}{du + v + 1}\end{align}$$
+$$\begin{align} (x, y) &= (-9d^2 + \varepsilon u, 3\varepsilon (v - 1)) \newline \varepsilon &= \frac{12(d^3 - 1)}{du + v + 1}\end{align}$$
 
 Khi đã chuyển được về dạng (1), ta chỉ cần tìm dlog của điểm $Q$ so với $P$. Do $p-1$ smooth nên hàm `discrete_log` của sagemath sẽ chạy rất nhanh và cho ta giá trị của $m$
 Do order của Hessian curve lớn hơn so với order của Weierstrass curve tương ứng nên khì tìm được kết quả ở trên, ta cần phải bruteforce để tìm được giá trị chính xác của $m$
@@ -239,14 +242,14 @@ for i in range(m1, p-1, P.order()):
 
 ```
 1780694557271320552511299360138314441283923223949197
-b'\x04\xc2f\x91\x8d\x9b\x14&lt;\n\xc8\x97\x10\xd3wm\xd4\xe9\\S\xc2\xaf\x8d'
-b'\r\x00\x06q\xe5at@\x9e\x1c\xbcH;\xa3\xc5S\x96\xfb\x80\xce\\\xc9'
+b'\x04\xc2f\x91\x8d\x9b\x14&lt;\n\xc8\x97\x10\xd3wm\xd4\xe9 \newlineS\xc2\xaf\x8d'
+b'\r\x00\x06q\xe5at@\x9e\x1c\xbcH;\xa3\xc5S\x96\xfb\x80\xce \newline\xc9'
 b"\x15=\xa6R='\xd4E1p\xe1\x7f\xa3\xd0\x1c\xd2D\x9a\xad\xda\n\x05"
 b'\x1d{F2\x94\xee4I\xc4\xc5\x06\xb7\x0b\xfctP\xf29\xda\xe5\xb7A'
 b'%\xb8\xe6\x12\xec\xb4\x94NX\x19+\xeet(\xcb\xcf\x9f\xd9\x07\xf1d}'
 b'-\xf6\x85\xf3Dz\xf4R\xebmQ%\xdcU#NMx4\xfd\x11\xb9'
 b'64%\xd3\x9cATW~\xc1v]D\x81z\xcc\xfb\x17b\x08\xbe\xf5'
-b'&gt;q\xc5\xb3\xf4\x07\xb4\\\x12\x15\x9b\x94\xac\xad\xd2K\xa8\xb6\x8f\x14l1'
+b'&gt;q\xc5\xb3\xf4\x07\xb4 \newline\x12\x15\x9b\x94\xac\xad\xd2K\xa8\xb6\x8f\x14l1'
 b'F\xafe\x94K\xce\x14`\xa5i\xc0\xcc\x14\xda)\xcaVU\xbc \x19m'
 b'N\xed\x05t\xa3\x94te8\xbd\xe6\x03}\x06\x81I\x03\xf4\xe9+\xc6\xa9'
 b'W*\xa5T\xfbZ\xd4i\xcc\x12\x0b:\xe52\xd8\xc7\xb1\x94\x167s\xe5'
@@ -344,11 +347,13 @@ print(s.check())
 print(s.model())
 ```
 
-Ta tìm được $p = 93511613846272978051774379195449772332692693333173612296021789501865098047641$
+Ta tìm được 
+
+$p = 93511613846272978051774379195449772332692693333173612296021789501865098047641$
 
 Sau khi đã phân tích được $n$, ta sẽ đi tìm $d$ sao cho $d*e = 1 \ (mod\ E.order())$ với $(E)\ y^2 = x^3 + ax + b \ (mod\ n)$ 
 Ta có thể tìm $d$ bằng cách tính $dp = pow(e, -1, E_1.order())$ và $dq = pow(e, -1, E_2.order())$, trong đó:
-$$\begin{align} (E_1)\ y^2 = x^3 + ax + b \ (\ mod \ p) \\ (E_2) \ y^2 = x^3 + ax + b \ (\ mod \ q) \end{align}$$
+$$\begin{align} (E_1)\ y^2 = x^3 + ax + b \ (\ mod \ p)  \newline (E_2) \ y^2 = x^3 + ax + b \ (\ mod \ q) \end{align}$$
 rồi dùng CRT để tìm $d \mod E.order()$
 
 ```python
