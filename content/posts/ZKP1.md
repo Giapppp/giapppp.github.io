@@ -1,7 +1,7 @@
 ---
 author: "Giap"
 title: "Zero Knowledge Proof: An Introduction"
-date: "2024-02-09"
+date: "2024-02-10"
 tags: [
     "Learning", "ZKP"
 ]
