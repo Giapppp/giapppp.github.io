@@ -19,7 +19,7 @@ categories = "categories"
 
 [params]
 title="Giap's Blog"
-description = "Sống để code chết mang theo"
+description = "Discipline is a bridge between goals and accomplishment."
 footnote = """
 Powered by  <a class=link href=https://gohugo.io target=_blank rel=noopener>Hugo</a> | 
 Theme <a class=link href=https://github.com/michaelneuper/hugo-texify3 target=_blank rel=noopener>TeXify3</a>
