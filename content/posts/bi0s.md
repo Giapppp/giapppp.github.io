@@ -319,8 +319,8 @@ In ECDSA, if we use the same nonce with different messages, we can recover priva
 $$
 \begin{aligned}
 s_1 * k - H(m_1) &= s_2 * k - H(m_2) ( = R * privkey) \newline
-
-k = \frac{s_1 - s_2}{H(m_1) - H(m_2)}
+k &= \frac{s_1 - s_2}{H(m_1) - H(m_2)}
+\end{aligned}
 $$
 
 Then we can calculate $privkey = \frac{s_1 * k - H(m_1)}{R}$

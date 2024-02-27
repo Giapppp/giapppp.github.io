@@ -92,3 +92,4 @@ A __succinct preprocessing argument system__ is made up by three algorithms: Set
 - $P(S_p, x, w) \to$ __short__ proof $\pi$; $|\pi| = O(log(|C|), \lambda)$
 
 - $V(S_v, x, \pi) \to$ accept or reject, __fast to verify__; $time(V) = O(|x|, log(|C|), \lambda)$
+
