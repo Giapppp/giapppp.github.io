@@ -19,21 +19,15 @@ In this post, I will try to describe my knowledge about SNARK. By the time I'm w
 
 ### What is a SNARK ?
 
-In the class of non-interactive proofs, a particularly interesting concept for proving integrity of results for
-large computations is that of __SNARK__, i.e., __succinct non-interactive argument of knowledge__. By this term, we
-denote a proof system which is:
+In the class of non-interactive proofs, a particularly interesting concept for proving integrity of results for large computations is that of __SNARK__, i.e., __succinct non-interactive argument of knowledge__. By this term, we denote a proof system which is:
 
-- __Succinct:__ the size of the proof is very small compared to the size of the statement or the witness, i.e., the
-size of the computation itself.
+- __Succinct:__ the size of the proof is very small compared to the size of the statement or the witness, i.e., the size of the computation itself.
 
 - __Non-interactive:__ it does not require rounds of interaction between the prover and the verifier.
 
-- __Argument:__ we consider it secure only for provers that have bounded computational resources, which
-means that provers with enough computational power can convince the verifier of a wrong statement.
+- __Argument:__ we consider it secure only for provers that have bounded computational resources, which means that provers with enough computational power can convince the verifier of a wrong statement.
 
-- __Knowledge-sound:__ it is not possible for the prover to construct a proof without knowing a certain so-called
-witness for the statement; formally, for any prover able to produce a valid proof, there is an extractor
-capable of extracting a witness (”the knowledge”) for the statement.
+- __Knowledge-sound:__ it is not possible for the prover to construct a proof without knowing a certain so-called witness for the statement; formally, for any prover able to produce a valid proof, there is an extractor capable of extracting a witness (”the knowledge”) for the statement.
 
 __Examples:__
 
@@ -41,9 +35,7 @@ __Examples:__
 
 - I know $x$ such that $g^x = h \mod p$
 
-__SNARK__ systems can be further equipped with a zero-knowledge property that enables the proof to be
-done without revealing anything about the intermediate steps (the witness). We will call these schemes
-__zk-SNARKs__.
+__SNARK__ systems can be further equipped with a zero-knowledge property that enables the proof to be done without revealing anything about the intermediate steps (the witness). We will call these schemes __zk-SNARKs__.
 
 zk-SNARK is really fit with blockchain, so we have lots of applications
 
@@ -92,4 +84,10 @@ A __succinct preprocessing argument system__ is made up by three algorithms: Set
 - $P(S_p, x, w) \to$ __short__ proof $\pi$; $|\pi| = O(log(|C|), \lambda)$
 
 - $V(S_v, x, \pi) \to$ accept or reject, __fast to verify__; $time(V) = O(|x|, log(|C|), \lambda)$
+
+### Types of preprocessing setup
+
+![Image alt](static\images\zkp2_4.png)
+
+![Image alt](static\images\zkp2_5.png)
 
