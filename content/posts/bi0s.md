@@ -675,7 +675,7 @@ I code in another way
 ```py
 d = 0
 ...
-```py
+
 t = end - start
 if t > 2:
     d *= 2
