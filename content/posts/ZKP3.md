@@ -1,6 +1,6 @@
 ---
 author: "Giap"
-title: "Zero Knowledge Proof: Interactive Proofs"
+title: "Zero Knowledge Proof: Interactive Proofs (Not done)"
 date: "2024-03-07"
 tags: [
     "Learning", "ZKP"
