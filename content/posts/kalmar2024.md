@@ -494,7 +494,7 @@ Because server gives us $a_0$ and $a_1$, so we can calculate $u$ and $v$ easily,
 
 __Case 2:__ $\Delta$ is a nonquadratic residue modulo $p$
 
-Now, we can't work over $\mathbb{F}_p$ because $\sqrt{\Delta}$ doesn't exist, so we need to work over $\mathbb{F}_{p^2}$, and it is equivalent to $F_p[x]/(x^2 - \Delta)$. After extend the field, we can do the same as Case 1
+Now, we can't work over $\mathbb{F} _ p$ because $\sqrt{\Delta}$ doesn't exist, so we need to work over $\mathbb{F} _ {p^2}$, and it is equivalent to $\mathbb{F} _ p[x]/(x^2 - \Delta)$. After extend the field, we can do the same as Case 1
 
 Because server requires polynomial modulo in all cases, so for case 1, I bruteforce to find a number which is a quadratic nonresidue modulo $p$.
 
