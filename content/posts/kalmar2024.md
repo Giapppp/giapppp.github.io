@@ -7,7 +7,7 @@ tags: [
 ]
 ---
 
-Last weekend, I played KalmarCTF 2024 with my team @1337%Yogurt. The cryptography category is very hard this year, so I could only manage to solve some of them. Here is my writeup for challenges that was solved by me.
+Last weekend, I played KalmarCTF 2024 with my team @1337%Yogurt. The cryptography category is very hard this year, so I could only manage to solve some of them. Here is my writeup for challenges that are solved by me.
 
 ## Cracking The Casino
 
