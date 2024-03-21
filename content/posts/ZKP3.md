@@ -1,6 +1,6 @@
 ---
 author: "Giap"
-title: "Zero Knowledge Proof: Interactive Proofs (Not done)"
+title: "Zero Knowledge Proof: Interactive Proofs"
 date: "2024-03-07"
 tags: [
     "Learning", "ZKP"
@@ -16,6 +16,8 @@ In this post, we will dig deeper about Interactive Proofs, which was described i
 [Computational Complexity: A Modern Approach, Chapter 8](https://theory.cs.princeton.edu/complexity/book.pdf)
 
 [Cryptonote-Ehrant](https://crypto-notes-erhant.vercel.app/zklearning/snarks-via-ips.html#relation-to-interactive-proofs)
+
+[Chapters 3 and 4 of [Thaler]](https://people.cs.georgetown.edu/jthaler/ProofsArgsAndZK.pdf)
 
 ## Detail
 
@@ -244,3 +246,123 @@ $$H_1(X_1) =  \sum _ {b_1 \lbrace 0, 1 \rbrace} \sum _ {b_2 \lbrace 0, 1 \rbrace
 -- $V$ picks $r_l$ at random, and needs to check that $s_l(r_l) = g(r_1,...,r_l)$
 
 - The verifier doesn't need for more rounds, because $V$ can perform this check with one oracle query
+
+#### Analysis of the sum-check protocol & costs
+
+- __Completeness:__ It holds by design: If $P$ sends the prescribed messages, then all of $V$'s checks will pass
+
+- __Soundness:__ If $P$ does not send the prescribed messages, then $V$ rejects with probability at least $1 - \frac{ld}{| \mathbb{F} |}$, where $d$ is the maximum degree of $g$ in any variable. You can proof by induction on the number of variables $l$
+
+- Total communication is $\mathcal{O}(dl)$ field elements
+
+    - $P$ sends $l$ messages, each a univariate polynomial of degree at most $d$. $V$ sends $l - 1$ messages, each consisting of one field element
+
+    - $V$'s runtime is: $$\mathcal{O}(dl + [time \ required \ to \ evaluate \ g \ at \ one \ point])$$
+
+    - $P$'s runtime is at most: $$\mathcal{O}(d * 2^l * [time \ required \ to \ evaluate \ g \ at \ one \ point])$$
+
+#### Application: Counting Triangles in a graph
+
+- __Input:__ $A \in \{0, 1\}^{n \times n}, representing the adjacency matrix of a graph
+
+- __Desired Output:__ $\sum_{(i, j, k) \in [n]^3} A_{ij}A_{jk}A_{ik}$
+
+- __The Protocol:__
+
+    - View $A$ as a function mapping $\{0, 1\}^{\log n} \times \{0, 1\}^{\log n}$ to $\mathbb{F}$
+
+    - Recall that $\tilde{A}$ denotes the multilinear extension of $A$
+
+    - Define the polynomial $g(X, Y, Z) = \tilde{A}(X, Y) \tilde{A}(Y, Z) \tilde{A}(X, Z)$
+
+    -  Apply the sum-check protocol to $g$ to compute $$\sum_{(a, b, c) \in \lbrace 0, 1 \rbrace ^{3 \log n}} g(a, b, c)$$
+
+- __Costs:__
+
+    - Total communication is $\mathcal{O}(\log n)$, $V$ runtime is $\mathcal{O}(n^2)$, $P$ runtime is $\mathcal{O}(n^3)$
+
+    - $V$'s runtime dominated by evaluating: $$g(r_1, r_2, r_3) = \tilde{A}(r_1, r_2) \tilde{A}(r_2, r_3) \tilde{A}(r_1, r_3)$$
+
+### A SNARK for circuit-satisfiability
+
+We will use a notion of __transcript__, which is defined as an assignment of a value to every gate in the circuit. A transcript $T$ is a __correct transcript__ if it assigns the gate values obtained by evaluating the circuit $C$ on a valid witness $\omega$
+
+![Image alt](https://raw.githubusercontent.com/Giapppp/Giapppp.github.io/main/static/images/zkp3_7.png)
+
+![Image alt](https://raw.githubusercontent.com/Giapppp/Giapppp.github.io/main/static/images/zkp3_8.png)
+
+![Image alt](https://raw.githubusercontent.com/Giapppp/Giapppp.github.io/main/static/images/zkp3_9.png)
+
+### The polynomial IOP underlying the SNARK
+
+Recall that our SNARK is all about proving that we know a secret witness $\omega$ such that for some public input $x$ and arithmetic circuit $C$ it holds that $C(x, \omega) = 0$. Denote the circuit size as $S = |C|$
+
+- First, we will construct the __correct transcript__ of $C(x, \omega)$, which we denote as $T: \{0, 1\}^{\log S} \to \mathbb{F}$.
+
+- Prover $P$ will calculate the __extension__ of $T$ to obtain a polynomial $h: \mathbb{F}^{\log S} \to \mathbb{F}$. This extension $h$ is the first message sent to the verifier $$\forall x \in \lbrace 0, 1 \rbrace^{\log S}: h(x) = T(x)$$
+
+- The verifier $V$ needs to verify that this is indeed true, but it will only make a few evaluations of $h$ in doing so
+
+The intuition behind using extensions is that: If there is even just a singe tiny error in the transcript, so by Schwartz-Zippel theorem,the extension of this transcript will disagree on almost all points with respect to the correct transcript.
+
+__Step 1:__
+
+Given $(\log S)$-variate polynomial $h$, identify a related $(3 \log S)$-variate polynomial $g_h$ such that: $h$ extends a correct transcript if and only if $g_h(a, b, c) = 0 \forall (a, b, c) \in \{0,1\}^{3 \log S}$ and to evaluate $g_h(r)$ at any $r$, suffices to evaluate $h$ at only 3 inputs
+
+So, we will define $g_h(a, b, c)$ via: $$\tilde{add}(a, b, c)(h(a) - (h(b) + h(c))) + \tilde{mult}(a, b, c) (h(a) - h(b)h(c))$$
+
+Let's just quickly introduce what the functions $\tilde{add}$ and $\tilde{mult}$ are:
+
+- $\tilde{add}(a, b, c)$ is a multilinear extension of a <p>wiring predicate</p> of a circuit, which return 1 if and only if $a$ is an __addition__ gate and it's two inputs are gates $b$ and $c$
+
+- $\tilde{mult}(a, b, c)$ is a multilinear extension of a <p>wiring predicate</p> of a circuit, which returns 1 if and only if $a$ is a __multiplication__ gate and it's two inputs are gates $b$ and $c$
+
+With the definition, we can see what happens:
+
+- $g_h(a, b, c) = h(a) - (h(b) + h(c))$ if $a$ is the label of a gate that computes the __sum__ of gates $b$ and $c$
+
+- $g_h(a, b, c) = h(a) - h(b)h(c)$ if $a$ is the label of a gate that computes the product of gates $b$ and $c$
+
+- $g_h(a, b, c) = 0$ otherwise
+
+__Step 2:__
+
+How can the verifier check that indeed $\forall (a, b, c) \in \{0,1\}^{3 \log S}: g_h(a, b, c) = 0$ ? In doing so, verifier should only evaluate $g_h$ at a single point!
+
+We will use a well-known result in polynomials: $\forall x \in H: g_h(x) = 0 \iff Z_h(x) | Z_H(x)$, where $Z_H(x)$ is called the __vanishing polynomial__ for $H$ and is defined as: $$Z_H(x) = \prod_{a\in H}(x - a)$$
+
+Then, the polynomial IOP will work as follows:
+
+- $P$ sends a polynomial $q$ such that $g_h(X) = q(X) \times Z_H(X)$
+
+- $V$ verifies this by picking a random $r \in H$ and checking $g_h(r) = q(r) \times Z_H(r)$
+
+In realworld, this approach is not really the best approach because of it's problems
+
+- $g_h$ is not univariate, it has $3 \log S$ variables
+
+- Having $P$ find and send the quotient polynomial is expensive
+
+- In the final SNARK, this would mean applying polynomial commitment to addition polynomials.
+
+Although it has some problems, but this approach is actually used by well-known schemes: __Marlin__, __PlonK__ and __Groth16__ do
+
+To deal with that problems, we can use the sum-check protocol: It handles multivariate polynomials, and doesn't require $P$ to send additional large polynomials
+
+Here is the general idea (We are working over the integers instead of $\mathbb{F}$):
+
+- $V$ checks this by running sum-check protocol with $P$ to compute: $$\sum_{a, b, c \in \lbrace 0, 1 \rbrace^{\log S}}g_h(a, b, c)^2$$
+
+- If all terms in the sum are 0, the sum is 0
+
+- If working over the integers, any non-zero term in the sum will cause the sum to be strictly positive
+
+- At end of sum-check protocol, $V$ needs to evaluate $g_h(r_1, r_2, r_3)$
+
+    - Suffices to evaluate $h(r_1), h(r_2), h(r_3)$, because $V$ will only compute $g_h(r_1, r_2, r_3)$ for some random inputs.
+
+    - Outside of these evaluations, $V$ runs in time $\mathcal{O}(\log S)$
+
+    - $P$ performs $\mathcal{O}(S)$ field operations given a witness $\omega$
+
+To understand more about the polynomial IOP, I suggest reading Justin Thaler's online book, chapters 3 and 4, which is noticed at the resources section.
