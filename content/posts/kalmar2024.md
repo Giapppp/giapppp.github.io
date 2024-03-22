@@ -305,9 +305,9 @@ In this challenge, I chose `card` mode to reduce space to search. We can convert
 
 So why we need to do that ? We will solve discrete logarithm problem:
 
-$$comm = g^x * h^r \mod q = g^(x + rs) \mod q$$(1)
+$$comm = g^x * h^r \mod q = g^{(x + rs)} \mod q$$(1)
 
-When connect to the server, we will have a chance to have $(s, q - 1) = p > 1$ where $p$ is a small prime. If $p$ doesn't exist in `factor`, then we can change the equation (1) to $comm = g^x \mod p$ and solve dlog over $\mathbb{F}_p$, which is very fast
+When connect to the server, we will have a chance to have $(s, q - 1) = p > 1$ where $p$ is a small prime. If $p$ doesn't exist in `factor`, then we can change the equation (1) to $comm = g^x \mod q$ and solve dlog over $\mathbb{F}_q$, and now we can bruteforce $x$ to satisfy the commitment function.
 
 `solve.py`
 ```py
