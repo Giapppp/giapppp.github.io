@@ -209,7 +209,7 @@ For each $\omega \in \{0, 1\}^l$, the result $\tilde{\delta} _ {\omega}(r)$ can 
 
 We are going to work with the sum-check protocol [Lund-Fortnow-Karloff-Nissan'90](https://dl.acm.org/doi/10.1145/146585.146605).
 
-The verifier $V$ given oracle access to a $l$-variate polynomial $g$ over field $\mathbb{F}$, and the goal of $V$ is compute the quantity: $$\sum {b_1 \in \lbrace 0, 1 \rbrace} \sum {b_2 \in \lbrace 0, 1 \rbrace} ... \sum {b_l \in \lbrace 0, 1 \rbrace} g(b_1, b_2,...,b_l)$$
+The verifier $V$ given oracle access to a $l$-variate polynomial $g$ over field $\mathbb{F}$, and the goal of $V$ is compute the quantity: $$\sum _{b_1 \in \lbrace 0, 1 \rbrace} \sum _ {b_2 \in \lbrace 0, 1 \rbrace} ... \sum _ {b_l \in \lbrace 0, 1 \rbrace} g(b_1, b_2,...,b_l)$$
 
 In the naive method, the verifier would query each input, and find the sum in a total of $2^l$ queries. We will consider this to be a costly operation
 
@@ -263,7 +263,7 @@ $$H_1(X_1) =  \sum _ {b_1 \lbrace 0, 1 \rbrace} \sum _ {b_2 \lbrace 0, 1 \rbrace
 
 #### Application: Counting Triangles in a graph
 
-- __Input:__ $A \in \{0, 1\}^{n \times n}, representing the adjacency matrix of a graph
+- __Input:__ $A \in \lbrace 0, 1 \rbrace^{n \times n}$, representing the adjacency matrix of a graph
 
 - __Desired Output:__ $\sum_{(i, j, k) \in [n]^3} A_{ij}A_{jk}A_{ik}$
 
@@ -313,9 +313,9 @@ So, we will define $g_h(a, b, c)$ via: $$\tilde{add}(a, b, c)(h(a) - (h(b) + h(c
 
 Let's just quickly introduce what the functions $\tilde{add}$ and $\tilde{mult}$ are:
 
-- $\tilde{add}(a, b, c)$ is a multilinear extension of a <p>wiring predicate</p> of a circuit, which return 1 if and only if $a$ is an __addition__ gate and it's two inputs are gates $b$ and $c$
+- $\tilde{add}(a, b, c)$ is a multilinear extension of a <i>wiring predicate</i> of a circuit, which return 1 if and only if $a$ is an __addition__ gate and it's two inputs are gates $b$ and $c$
 
-- $\tilde{mult}(a, b, c)$ is a multilinear extension of a <p>wiring predicate</p> of a circuit, which returns 1 if and only if $a$ is a __multiplication__ gate and it's two inputs are gates $b$ and $c$
+- $\tilde{mult}(a, b, c)$ is a multilinear extension of a <i>wiring predicate</i> of a circuit, which returns 1 if and only if $a$ is a __multiplication__ gate and it's two inputs are gates $b$ and $c$
 
 With the definition, we can see what happens:
 
