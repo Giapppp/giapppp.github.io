@@ -479,7 +479,7 @@ __Protocol__:
 
     - output: correct output by __evaluation proof__
 
-![Image alt](https://raw.githubusercontent.com/Giapppp/Giapppp.github.io/main/static/images/zkp4_9.png)
+![Image alt](https://raw.githubusercontent.com/Giapppp/Giapppp.github.io/main/static/images/zkp4_10.png)
 
 __Theorem__:
 
