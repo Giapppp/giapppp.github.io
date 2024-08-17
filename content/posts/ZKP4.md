@@ -312,7 +312,7 @@ Why we can't use a zero-test to prove that $f(y) - g(W(y)) = 0$ on $\Omega$ ? Th
 
 We can reduce this to a prod-check on a polynomial of degree $2k$. Firstly, let's talk about the observation that we will use: 
 
-__Observation:__ if $(W(a), f(a))_{a \in \Omega}$ is a permutation of $(a, g(a))_{a \in \Omega}$, then $f(y) = g(W(y))$ for all $y \in \Omega$
+__Observation:__ if $(W(a), f(a))_{a \in \Omega}$ is a permutation of $(a, g(a))$ for $a \in \Omega$ , then $f(y) = g(W(y))$ for all $y \in \Omega$
 
 We can prove it by example: 
 - Permutation: $W(\omega^0) = \omega^2, W(\omega^1) = \omega^0, W(\omega^2) = \omega^1$

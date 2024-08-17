@@ -3,7 +3,7 @@ author: "Giap"
 title: "Isogeny-Based Cryptography"
 date: "2023-09-08"
 tags: [
-    "Learning", "CIMPA 2024"
+    "Learning",
 ]
 ---
 This is my note about Isogeny-Based Cryptography, I really want to make a CTF challenge about isogeny, but I don't understand enough to make it :(. Maybe someday I can do it <3
