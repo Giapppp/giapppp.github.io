@@ -141,7 +141,7 @@ Because there are two possible output labels, there are two different quadratic 
 <p align="center">
   <img src="https://hackmd.io/_uploads/Hyex4oK9C.png" />
 </p>
-<p style="text-align: center;"><sub>GRR2 Garbled Gate Values for an AND gate</sub></p>
+<p style="text-align: center;"><sub>GRR2 Garbled Gate Values for an AND gate, image taken from "A Gentle Introduction to Yao’s Garbled Circuits - Sophia Yakoubov" </sub></p>
 
 Note that GRR2 uses a finite field, not in real field.
 
